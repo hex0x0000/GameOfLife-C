@@ -1,2 +1,0 @@
-#define VERSION_MAJOR @GameOfLife_VERSION_MAJOR@
-#define VERSION_MINOR @GameOfLife_VERSION_MINOR@
