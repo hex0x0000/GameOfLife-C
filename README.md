@@ -5,7 +5,7 @@ Yet another implementation of Conway's Game of Life written in C with SDL2
 - Infinite grid (until int64_t limit is reached, at least)
 - Moving around the grid
 - Zoom-in Zoom-out
-- Importing custom generations, you can generate them from a matrix with [to_coords.py](/to_coords.py). Example: `cat gosper_glider_gun | python to_coords.py O > build/glider_gun`
+- Importing custom generations, you can generate them from a matrix with [to_coords.py](https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/to_coords.py). Example: `cat gosper_glider_gun | python to_coords.py O > build/glider_gun`
 - Automatically exports current generation at exit
 
 Future features:
