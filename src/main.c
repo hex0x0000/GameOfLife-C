@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "grid_render.h"
 #include "gol.h"
+#include "settings.h"
 
 #ifndef FONT
 #error You must specify the font's path with -DFONT="\"/path/to/font.ttf\""'
@@ -139,7 +140,9 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    GridRender *gr = GR_New(renderer, font);
+    Settings *settings = default_settings();
+
+    GridRender *gr = GR_New(renderer, font, settings);
     if (!gr)
     {
         LOG_CRITICAL("Couldn't initialize GridRender.");
@@ -221,6 +224,9 @@ int main(int argc, char **argv)
 
         case SDLK_RIGHT:
             GR_ChangeVisual(gr, 1, 0);
+            break;
+
+        case SDLK_TAB:
             break;
 
         default:

@@ -42,7 +42,7 @@ void tile_free(void *unit)
     free(tile);
 }
 
-GridRender *GR_New(SDL_Renderer *renderer, TTF_Font *font)
+GridRender *GR_New(SDL_Renderer *renderer, TTF_Font *font, Settings *settings)
 {
     GridRender *gr = malloc(sizeof(GridRender));
     if (!gr)
@@ -54,12 +54,7 @@ GridRender *GR_New(SDL_Renderer *renderer, TTF_Font *font)
         .text_coords = NULL};
     gr->matrix = DM_New(&init_value, sizeof(Tile), tile_free);
     gr->rect_size = INITIAL_RECT_SIZE;
-    gr->settings = (Settings){
-        .zoom_sensibility = 5,
-        .show_coords = true,
-        .can_show_coords = true,
-        .min_rect_size = 50,
-        .max_rect_size = 200};
+    gr->settings = default_settings();
     gr->font = font;
     gr->renderer = renderer;
     return gr;
@@ -130,8 +125,8 @@ int GR_ChangeVisual(GridRender *gr, int8_t delta_x, int8_t delta_y)
 
 int GR_ChangeZoom(GridRender *gr, int new_zoom, int length, int width)
 {
-    uint16_t new_rect_size = gr->rect_size + (new_zoom * gr->settings.zoom_sensibility);
-    if (new_rect_size < gr->settings.min_rect_size || new_rect_size > gr->settings.max_rect_size)
+    uint16_t new_rect_size = gr->rect_size + (new_zoom * gr->settings->zoom_sensibility);
+    if (new_rect_size < gr->settings->min_rect_size || new_rect_size > gr->settings->max_rect_size)
         return EXIT_SUCCESS;
     gr->rect_size = new_rect_size;
     if (GR_UpdateScreenSize(gr, length, width) == EXIT_FAILURE)
@@ -169,7 +164,7 @@ int GR_Render(GridRender *gr, LinkedList *alive_cells)
             free(cell);
             if (SDL_RenderFillRect(gr->renderer, &rect_tile) != 0)
                 return EXIT_FAILURE;
-            if (gr->settings.can_show_coords && gr->settings.show_coords)
+            if (gr->can_show_coords && gr->settings->show_coords)
             {
                 if (SDL_RenderCopy(gr->renderer, tile->text_coords, NULL, &tile->rect) != 0)
                     return EXIT_FAILURE;
@@ -179,7 +174,7 @@ int GR_Render(GridRender *gr, LinkedList *alive_cells)
             else
                 can_show_coords = true;
         }
-    gr->settings.can_show_coords = can_show_coords;
+    gr->can_show_coords = can_show_coords;
     return EXIT_SUCCESS;
 }
 

@@ -8,17 +8,9 @@
 #include <stdint.h>
 #include "dynamic_matrix.h"
 #include "linkedlist.h"
+#include "settings.h"
 
 #define INITIAL_RECT_SIZE 100
-
-typedef struct Settings
-{
-    int zoom_sensibility;
-    bool show_coords;
-    bool can_show_coords;
-    uint16_t min_rect_size;
-    uint16_t max_rect_size;
-} Settings;
 
 typedef struct Tile
 {
@@ -35,10 +27,11 @@ typedef struct GridRender
     TTF_Font *font;
     SDL_Renderer *renderer;
     uint16_t rect_size;
-    Settings settings;
+    bool can_show_coords;
+    Settings *settings;
 } GridRender;
 
-GridRender *GR_New(SDL_Renderer *renderer, TTF_Font *font);
+GridRender *GR_New(SDL_Renderer *renderer, TTF_Font *font, Settings *settings);
 int GR_UpdateScreenSize(GridRender *gr, int length, int width);
 int GR_ChangeVisual(GridRender *gr, int8_t delta_x, int8_t delta_y);
 int GR_ChangeZoom(GridRender *gr, int new_zoom, int length, int width);
