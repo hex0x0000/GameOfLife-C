@@ -1,3 +1,4 @@
+// Copyright: https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/LICENSE
 #include "linkedlist.h"
 #include "utils.h"
 #include <string.h>

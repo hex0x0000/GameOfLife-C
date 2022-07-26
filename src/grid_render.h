@@ -1,3 +1,4 @@
+// Copyright: https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/LICENSE
 #ifndef __GRID_RENDER_H__
 #define __GRID_RENDER_H__
 

@@ -1,3 +1,4 @@
+// Copyright: https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/LICENSE
 #include "dynamic_matrix.h"
 #include <string.h>
 #include "utils.h"
@@ -33,21 +34,21 @@ int DM_Realloc(DynMatrix *dm, uint64_t new_size_x, uint64_t new_size_y)
     if (old_size_x == 0 && old_size_y == 0)
     {
         dm->matrix = calloc(new_size_y, sizeof(void *));
-        for (uint64_t i = 0; i < new_size_y; i++)
+        for (uint64_t y = 0; y < new_size_y; y++)
         {
-            dm->matrix[i] = calloc(new_size_x, sizeof(void *));
-            if (!dm->matrix[i])
+            dm->matrix[y] = calloc(new_size_x, sizeof(void *));
+            if (!dm->matrix[y])
                 return EXIT_FAILURE;
-            for (uint64_t j = 0; j < new_size_x; j++)
+            for (uint64_t x = 0; x < new_size_x; x++)
             {
                 void *new_value = malloc(dm->type_size);
                 if (!new_value)
                 {
-                    free(dm->matrix[i]);
+                    free(dm->matrix[y]);
                     return EXIT_FAILURE;
                 }
                 memcpy(new_value, dm->init_value, dm->type_size);
-                dm->matrix[i][j] = new_value;
+                dm->matrix[y][x] = new_value;
             }
         }
         dm->size_x = new_size_x;
@@ -59,32 +60,32 @@ int DM_Realloc(DynMatrix *dm, uint64_t new_size_x, uint64_t new_size_y)
 
     if (old_size_x < new_size_x)
     {
-        for (uint64_t i = 0; i < old_size_y; i++)
+        for (uint64_t y = 0; y < old_size_y; y++)
         {
-            dm->matrix[i] = realloc(dm->matrix[i], sizeof(void *) * new_size_x);
-            if (!dm->matrix[i])
+            dm->matrix[y] = realloc(dm->matrix[y], sizeof(void *) * new_size_x);
+            if (!dm->matrix[y])
                 return EXIT_FAILURE;
-            for (uint64_t j = old_size_x; j < new_size_x; j++)
+            for (uint64_t x = old_size_x; x < new_size_x; x++)
             {
                 void *new_value = malloc(dm->type_size);
                 if (!new_value)
                 {
-                    free(dm->matrix[i]);
+                    free(dm->matrix[y]);
                     return EXIT_FAILURE;
                 }
                 memcpy(new_value, dm->init_value, dm->type_size);
-                dm->matrix[i][j] = new_value;
+                dm->matrix[y][x] = new_value;
             }
         }
     }
     else
     {
-        for (uint64_t i = 0; i < old_size_y; i++)
+        for (uint64_t y = 0; y < old_size_y; y++)
         {
-            for (uint64_t j = new_size_x; j < old_size_x; j++)
-                (*dm->free)(dm->matrix[i][j]);
-            dm->matrix[i] = realloc(dm->matrix[i], sizeof(void *) * new_size_x);
-            if (!dm->matrix[i])
+            for (uint64_t x = new_size_x; x < old_size_x; x++)
+                (*dm->free)(dm->matrix[y][x]);
+            dm->matrix[y] = realloc(dm->matrix[y], sizeof(void *) * new_size_x);
+            if (!dm->matrix[y])
                 return EXIT_FAILURE;
         }
     }
@@ -94,31 +95,31 @@ int DM_Realloc(DynMatrix *dm, uint64_t new_size_x, uint64_t new_size_y)
         dm->matrix = realloc(dm->matrix, sizeof(void *) * new_size_y);
         if (!dm->matrix)
             return EXIT_FAILURE;
-        for (uint64_t i = old_size_y; i < new_size_y; i++)
+        for (uint64_t y = old_size_y; y < new_size_y; y++)
         {
-            dm->matrix[i] = calloc(new_size_x, sizeof(void *));
-            if (!dm->matrix[i])
+            dm->matrix[y] = calloc(new_size_x, sizeof(void *));
+            if (!dm->matrix[y])
                 return EXIT_FAILURE;
-            for (uint64_t j = 0; j < new_size_x; j++)
+            for (uint64_t x = 0; x < new_size_x; x++)
             {
                 void *new_value = malloc(dm->type_size);
                 if (!new_value)
                 {
-                    free(dm->matrix[i]);
+                    free(dm->matrix[y]);
                     return EXIT_FAILURE;
                 }
                 memcpy(new_value, dm->init_value, dm->type_size);
-                dm->matrix[i][j] = new_value;
+                dm->matrix[y][x] = new_value;
             }
         }
     }
     else
     {
-        for (uint64_t i = new_size_y; i < old_size_y; i++)
+        for (uint64_t y = new_size_y; y < old_size_y; y++)
         {
-            for (uint64_t j = 0; j < new_size_x; j++)
-                (*dm->free)(dm->matrix[i][j]);
-            free(dm->matrix[i]);
+            for (uint64_t x = 0; x < new_size_x; x++)
+                (*dm->free)(dm->matrix[y][x]);
+            free(dm->matrix[y]);
         }
         dm->matrix = realloc(dm->matrix, sizeof(void *) * new_size_y);
         if (!dm->matrix)
@@ -141,11 +142,11 @@ void *DM_Get(DynMatrix *dm, uint64_t x, uint64_t y)
 void DM_Free(DynMatrix *dm)
 {
     (*dm->free)(dm->init_value);
-    for (uint64_t i = 0; i < dm->size_y; i++)
+    for (uint64_t y = 0; y < dm->size_y; y++)
     {
-        for (uint64_t j = 0; j < dm->size_x; j++)
-            (*dm->free)(dm->matrix[i][j]);
-        free(dm->matrix[i]);
+        for (uint64_t x = 0; x < dm->size_x; x++)
+            (*dm->free)(dm->matrix[y][x]);
+        free(dm->matrix[y]);
     }
     free(dm->matrix);
     free(dm);

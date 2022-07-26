@@ -1,3 +1,4 @@
+// Copyright: https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/LICENSE
 #ifndef __GOL_H__
 #define __GOL_H__
 

@@ -1,3 +1,5 @@
+// Copyright: https://git.bounceme.net/hex0x0000/GameOfLife-C/src/branch/main/LICENSE
+#include "version.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <stdbool.h>
@@ -81,6 +83,9 @@ void *gen_maker_thread(void *_ __attribute__((unused)))
 
 int main(int argc, char **argv)
 {
+    puts("GameOfLife " VERSION "  Copyright (C) 2022  Valentino Peggi\n"
+         "This program comes with ABSOLUTELY NO WARRANTY\n"
+         "This is free software, and you are welcome to redistribute it under certain conditions");
     if (LOG_INIT() == EXIT_FAILURE)
     {
 #ifdef FILE_LOGS
