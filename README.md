@@ -22,13 +22,12 @@ $ build
 
 If you're on any other distro:
 1. Install SDL2 and SDL2_ttf
-2. Make sure that `pkg-config` recognizes SDL2
+2. Make sure that `pkg-config` recognizes SDL2 and SDL2_ttf
 
 After that (from the project's root):
 ```bash
 $ export PROJ_ROOT="$(pwd)"
 $ export FONT="/path/to/font.ttf" # whichever you want
-$ export SDL2TTF="/usr/share" # or wherever SDL2_ttf is installed
 $ mkdir build
 $ cd build/
 $ ../build.sh # chmod +x build.sh if you can't execute it
