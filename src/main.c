@@ -11,10 +11,8 @@
 #include "grid_render.h"
 #include "gol.h"
 #include "settings.h"
+#include "gui.h"
 
-#ifndef FONT
-#error You must specify the font's path with -DFONT="\"/path/to/font.ttf\""'
-#endif
 #define FONT_SIZE 20
 #define FPS 60
 
@@ -22,7 +20,8 @@ pthread_mutex_t lock;
 #define MUTEX lock
 #include "log.h"
 
-#define AWAIT_TIME 100 // Milliseconds
+_Atomic(uint32_t) await_time = 100; // Milliseconds
+_Atomic(uint32_t) gen_num = 0;
 volatile atomic_bool quit = false;
 LinkedList *current_gen = NULL;
 pthread_t thread_id;
@@ -65,14 +64,15 @@ void *gen_maker_thread(void *_ __attribute__((unused)))
         gettimeofday(&t_now, NULL);
         now = t_now.tv_sec * 1000 + t_now.tv_usec / 1000;
 
-        if (now - before >= AWAIT_TIME && gen_pool->list_size > 1)
+        if (now - before >= await_time && gen_pool->list_size > 1)
         {
-            LOG_DEBUG("difference: %d >= AWAIT_TIME: %d", now - before, AWAIT_TIME);
+            LOG_DEBUG("difference: %d >= AWAIT_TIME: %d", now - before, await_time);
             pthread_mutex_lock(&lock);
             if (current_gen)
                 LL_Free(current_gen);
             current_gen = *(LinkedList **)LL_PopHead(gen_pool);
             pthread_mutex_unlock(&lock);
+            gen_num += 1;
 
             gettimeofday(&t_before, NULL);
             before = t_before.tv_sec * 1000 + t_now.tv_usec / 1000;
@@ -140,7 +140,7 @@ int main(int argc, char **argv)
         return EXIT_FAILURE;
     }
 
-    Settings *settings = default_settings();
+    Settings *settings = settings_default();
 
     GridRender *gr = GR_New(renderer, font, settings);
     if (!gr)
@@ -162,8 +162,14 @@ int main(int argc, char **argv)
 
     // Main loop
     SDL_Keycode key_pressed = 0;
+    bool gui_open = false;
     while (!quit)
     {
+        while (gui_open && !quit)
+        {
+            
+        }
+        
         int w = -1;
         int h = -1;
         SDL_GetRendererOutputSize(renderer, &w, &h);
@@ -268,6 +274,7 @@ int main(int argc, char **argv)
     TTF_CloseFont(font);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    free(settings);
     SDL_Quit();
     LOG_CLOSE();
     return 0;

@@ -10,6 +10,7 @@ typedef struct Settings
 {
     int zoom_sensibility;
     bool show_coords;
+    bool show_grid;
     uint16_t min_rect_size;
     uint16_t max_rect_size;
 } Settings;
