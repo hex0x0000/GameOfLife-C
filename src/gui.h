@@ -20,7 +20,7 @@ typedef struct ScrollBar
     SDL_Rect label_rect;
     SDL_Rect bar;
     SDL_Rect indicator;
-    float value; // 0.0 - 100.0
+    float *value; // 0.0 - 1.0
 } ScrollBar;
 
 typedef struct CheckBox
@@ -29,7 +29,7 @@ typedef struct CheckBox
     SDL_Rect label_rect;
     SDL_Rect box;
     SDL_Rect check;
-    bool value;
+    bool *value;
 } CheckBox;
 
 typedef struct Button

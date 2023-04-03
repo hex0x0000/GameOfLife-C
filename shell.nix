@@ -11,6 +11,7 @@ pkgs.mkShell rec {
         SDL2_ttf
         valgrind
         python38
+	clang
     ];
 
     PROJ_ROOT = "$PWD";

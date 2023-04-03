@@ -39,7 +39,8 @@ ScrollBar *new_scrollbar(SDL_Renderer *renderer, TTF_Font *font, const char *tex
         .w = 15,
         .x = 0,
         .y = 0};
-    scrollbar->value = 0.0;
+    scrollbar->value = malloc(sizeof(float));
+    *scrollbar->value = 0.0;
     return scrollbar;
 }
 
@@ -58,7 +59,13 @@ void set_scrollbar_value(ScrollBar *scrollbar, SDL_Rect *mouse_pos)
 {
     if (SDL_HasIntersection(&scrollbar->bar, mouse_pos))
     {
+        int distance = mouse_pos - scrollbar->indicator.x;
+        if (distance > 0 && distance < scrollbar->bar.w)
+        {
+            *scrollbar->value = (float)distance / (float)scrollbar->bar.w;
+            scrollbar->indicator.x = mouse_pos->x;
         }
+    }
 }
 
 int render_scrollbar(SDL_Renderer *renderer, ScrollBar *scrollbar)
@@ -69,16 +76,25 @@ int render_scrollbar(SDL_Renderer *renderer, ScrollBar *scrollbar)
         return EXIT_FAILURE;
     if (SDL_RenderFillRect(renderer, &scrollbar->bar) != 0)
         return EXIT_FAILURE;
+    if (SDL_SetRenderDrawColor(renderer, 150, 150, 150, 0) != 0)
+        return EXIT_FAILURE;
+    if (SDL_RenderFillRect(renderer, &scrollbar->indicator) != 0)
+        return EXIT_FAILURE;
 }
 
 void free_scrollbar(ScrollBar *scrollbar)
 {
     SDL_DestroyTexture(scrollbar->label);
+    free(scrollbar->value);
     free(scrollbar);
 }
 
-SettingsUI *new_settingsui()
+SettingsUI *new_settingsui(SDL_Renderer *renderer, TTF_Font *font)
 {
+    SettingsUI *settingsui = malloc(sizeof(SettingsUI));
+    settingsui->speed = new_scrollbar(renderer, font, "Speed: ");
+    settingsui->zoom_sensibility = new_scrollbar(renderer, font, "Zoom Sensibility: ");
+    return settingsui;
 }
 
 SDL_Texture *new_text(SDL_Renderer *renderer,
